@@ -2251,4 +2251,4 @@ startServer().catch((err) => {
   console.error("---> [FATAL ERROR] Server STARNET gagal menyala karena:", err);
 });
 
-echo console.log("---> [PELACAK] File terbaca sampai baris paling bawah!"); >> server.ts
+echo console.log("---> [PELACAK] File terbaca sampai baris paling bawah!"); >> server.ts;
