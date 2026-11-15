@@ -2225,10 +2225,10 @@ async function startServer() {
     app.use(express.static(distDir));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distDir, 'index.html'));
-    });}
+    });
     console.log("---> [TRACK 2] Semua rute terbaca, bersiap menyalakan server...");
 app.listen(PORT, '0.0.0.0', () => {
-  }
+  }}
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`NetOps MikroTik server running on http://0.0.0.0:${PORT}`);
