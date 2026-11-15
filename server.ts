@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
+import fs from 'node:fs';
 import path from 'node:path';
-import { createServer as createViteServer } from 'vite';
 import {
   clearSessionCookie,
   createSessionToken,
@@ -53,7 +54,7 @@ import {
   updateBranchProfile,
 } from './server/mikrotik.ts';
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const VALID_MODES = new Set<ConnectionMode>(['api', 'api-ssl', 'rest-http', 'rest-https', 'sandbox']);
 
 function sanitizeBranch(b: DbBranch) {
@@ -82,8 +83,6 @@ function getBranchForUser(req: AuthedRequest, branchId: number): DbBranch | null
 async function startServer() {
   const app = express();
   app.use(express.json());
-  app.use(express.json());
-  console.log("---> [TRACK 1] Kerangka Express berhasil dibuat!");
 
   // --- Auth Routes ---
 
@@ -2213,22 +2212,28 @@ async function startServer() {
 
   // --- Vite / Static Frontend Serving ---
 
+  const distDir = path.resolve(process.cwd(), 'dist');
+  const distIndex = path.join(distDir, 'index.html');
   const isProd = process.env.NODE_ENV === 'production';
-  if (!isProd) {
+
+  if (isProd && fs.existsSync(distIndex)) {
+    app.use(express.static(distDir));
+    app.get('*', (_req, res) => {
+      res.sendFile(distIndex);
+    });
+  } else {
+    if (isProd && !fs.existsSync(distIndex)) {
+      console.warn(
+        'Folder dist/ belum ditemukan (jalankan "npm run build" untuk mode produksi). Memakai Vite middleware sementara...'
+      );
+    }
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
-    const distDir = path.resolve(process.cwd(), 'dist');
-    app.use(express.static(distDir));
-    app.get('*', (_req, res) => {
-      res.sendFile(path.join(distDir, 'index.html'));
-    });
-    console.log("---> [TRACK 2] Semua rute terbaca, bersiap menyalakan server...");
-app.listen(PORT, '0.0.0.0', () => {
-  })}
+  }
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`NetOps MikroTik server running on http://0.0.0.0:${PORT}`);
@@ -2248,10 +2253,4 @@ app.listen(PORT, '0.0.0.0', () => {
   });
 }
 
-console.log("---> [DEBUG] Mencoba menjalankan startServer()...");
-
-startServer().catch((err) => {
-  console.log("---> [DEBUG] Fungsi startServer berhasil dipanggil, sedang menjalankan baris-baris awal...");
-  console.error("---> [FATAL ERROR] Server STARNET gagal menyala karena:", err);
-});
-
+startServer();
