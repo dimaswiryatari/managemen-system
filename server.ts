@@ -57,26 +57,26 @@ import {
   updateBranchCustomer,
   updateBranchProfile,
 } from './server/mikrotik.ts';
-import {
-  buildPonPortSummaries,
-  checkOltStatus,
-  getOltOnus,
-  probeOltConnectivity,
-  rebootOltOnu,
-  syncOltTelemetry,
-} from './server/olt.ts';
+//import {
+//  buildPonPortSummaries,
+//  checkOltStatus,
+//  getOltOnus,
+//  probeOltConnectivity,
+//  rebootOltOnu,
+//  syncOltTelemetry,
+//} from './server/olt.ts';
 
 const PORT = 3000;
-const VALID_MODES = new Set<ConnectionMode>(['api', 'api-ssl', 'rest-http', 'rest-https', 'sandbox']);
-const VALID_OLT_MODES = new Set<OltConnectionMode>(['telnet', 'ssh', 'snmp', 'web-http', 'sandbox']);
-const VALID_PON_TYPES = new Set<OltPonType>(['GPON', 'EPON']);
-const VALID_ONU_STATUSES = new Set<OltOnuStatus>([
-  'online',
-  'los',
-  'dying_gasp',
-  'offline',
-  'unconfigured',
-]);
+//const VALID_MODES = new Set<ConnectionMode>(['api', 'api-ssl', 'rest-http', 'rest-https', 'sandbox']);
+//const VALID_OLT_MODES = new Set<OltConnectionMode>(['telnet', 'ssh', 'snmp', 'web-http', 'sandbox']);
+//const VALID_PON_TYPES = new Set<OltPonType>(['GPON', 'EPON']);
+//const VALID_ONU_STATUSES = new Set<OltOnuStatus>([
+//   'online',
+//   'los',
+//   'dying_gasp',
+//   'offline',
+//   'unconfigured',
+// ]);
 
 function sanitizeBranch(b: DbBranch) {
   return {
