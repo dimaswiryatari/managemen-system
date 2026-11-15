@@ -82,6 +82,8 @@ function getBranchForUser(req: AuthedRequest, branchId: number): DbBranch | null
 async function startServer() {
   const app = express();
   app.use(express.json());
+  app.use(express.json());
+  console.log("---> [TRACK 1] Kerangka Express berhasil dibuat!");
 
   // --- Auth Routes ---
 
@@ -2224,6 +2226,8 @@ async function startServer() {
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distDir, 'index.html'));
     });
+    console.log("---> [TRACK 2] Semua rute terbaca, bersiap menyalakan server...");
+app.listen(PORT, '0.0.0.0', () => {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
@@ -2252,3 +2256,4 @@ startServer().catch((err) => {
 });
 
 echo console.log("---> [PELACAK] File terbaca sampai baris paling bawah!"); >> server.ts;
+
