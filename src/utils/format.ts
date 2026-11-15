@@ -2,8 +2,6 @@ import type {
   BillingAutomationSettings,
   ConnectionMode,
   CustomerInvoice,
-  OltConnectionMode,
-  OltOnuStatus,
 } from '../types';
 
 export function formatDateTime(iso: string): string {
@@ -36,39 +34,6 @@ export function formatConnectionMode(mode: ConnectionMode): string {
     default:
       return mode;
   }
-}
-
-export function formatOltConnectionMode(mode: OltConnectionMode): string {
-  switch (mode) {
-    case 'telnet':
-      return 'Telnet CLI';
-    case 'ssh':
-      return 'SSH CLI';
-    case 'snmp':
-      return 'SNMP v2c';
-    case 'web-http':
-      return 'Web HTTP';
-    case 'sandbox':
-      return 'Lab Sandbox';
-    default:
-      return mode;
-  }
-}
-
-export function getOpticalSignalLevel(
-  rxDbm: number | null,
-  status: OltOnuStatus
-): { label: string; tone: 'emerald' | 'amber' | 'red' | 'slate' } {
-  if (status !== 'online' || rxDbm === null || !Number.isFinite(rxDbm)) {
-    return { label: 'Tidak ada sinyal', tone: 'slate' };
-  }
-  if (rxDbm <= -28) {
-    return { label: 'Kritis', tone: 'red' };
-  }
-  if (rxDbm <= -25) {
-    return { label: 'Lemah', tone: 'amber' };
-  }
-  return { label: 'Baik', tone: 'emerald' };
 }
 
 export function formatRupiah(amount: number): string {

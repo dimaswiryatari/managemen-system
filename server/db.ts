@@ -44,51 +44,6 @@ export interface DbAuditLog {
   created_at: string;
 }
 
-export type OltPonType = 'GPON' | 'EPON';
-export type OltConnectionMode = 'telnet' | 'ssh' | 'snmp' | 'web-http' | 'sandbox';
-export type OltOnuStatus = 'online' | 'los' | 'dying_gasp' | 'offline' | 'unconfigured';
-
-export interface DbOlt {
-  id: number;
-  branch_id: number;
-  name: string;
-  vendor: string;
-  model: string;
-  pon_type: OltPonType;
-  connection_mode: OltConnectionMode;
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  snmp_community: string;
-  total_pon_ports: number;
-  uplink_info: string;
-  notes: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface DbOltOnu {
-  id: number;
-  olt_id: number;
-  pon_port: string;
-  onu_index: number;
-  onu_name: string;
-  customer_name: string;
-  sn_mac: string;
-  onu_type: string;
-  status: OltOnuStatus;
-  rx_power_dbm: number | null;
-  tx_power_dbm: number | null;
-  olt_rx_power_dbm: number | null;
-  temperature_c: number | null;
-  distance_m: number | null;
-  vlan_id: number;
-  uptime: string;
-  last_down_reason: string;
-  updated_at: string;
-}
-
 const dataDir = path.resolve(process.cwd(), 'data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
@@ -262,48 +217,6 @@ db.exec(`
     notes TEXT NOT NULL DEFAULT '',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS olts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    branch_id INTEGER NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    vendor TEXT NOT NULL DEFAULT 'ZTE',
-    model TEXT NOT NULL DEFAULT 'C320',
-    pon_type TEXT NOT NULL DEFAULT 'GPON' CHECK(pon_type IN ('GPON', 'EPON')),
-    connection_mode TEXT NOT NULL DEFAULT 'sandbox' CHECK(connection_mode IN ('telnet', 'ssh', 'snmp', 'web-http', 'sandbox')),
-    host TEXT NOT NULL,
-    port INTEGER NOT NULL DEFAULT 23,
-    username TEXT NOT NULL DEFAULT '',
-    password TEXT NOT NULL DEFAULT '',
-    snmp_community TEXT NOT NULL DEFAULT 'public',
-    total_pon_ports INTEGER NOT NULL DEFAULT 8,
-    uplink_info TEXT NOT NULL DEFAULT '10G-SFP+1',
-    notes TEXT NOT NULL DEFAULT '',
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS olt_onus (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    olt_id INTEGER NOT NULL REFERENCES olts(id) ON DELETE CASCADE,
-    pon_port TEXT NOT NULL,
-    onu_index INTEGER NOT NULL DEFAULT 1,
-    onu_name TEXT NOT NULL,
-    customer_name TEXT NOT NULL DEFAULT '',
-    sn_mac TEXT NOT NULL,
-    onu_type TEXT NOT NULL DEFAULT 'F609',
-    status TEXT NOT NULL DEFAULT 'online' CHECK(status IN ('online', 'los', 'dying_gasp', 'offline', 'unconfigured')),
-    rx_power_dbm REAL,
-    tx_power_dbm REAL,
-    olt_rx_power_dbm REAL,
-    temperature_c REAL,
-    distance_m INTEGER,
-    vlan_id INTEGER NOT NULL DEFAULT 100,
-    uptime TEXT NOT NULL DEFAULT '',
-    last_down_reason TEXT NOT NULL DEFAULT '',
-    updated_at TEXT NOT NULL,
-    UNIQUE(olt_id, sn_mac)
   );
 `);
 
