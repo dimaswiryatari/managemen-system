@@ -2244,4 +2244,9 @@ async function startServer() {
   });
 }
 
-startServer();
+console.log("---> [DEBUG] Mencoba menjalankan startServer()...");
+
+startServer().catch((err) => {
+  console.log("---> [DEBUG] Fungsi startServer berhasil dipanggil, sedang menjalankan baris-baris awal...");
+  console.error("---> [FATAL ERROR] Server STARNET gagal menyala karena:", err);
+});
